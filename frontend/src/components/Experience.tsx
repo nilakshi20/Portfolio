@@ -6,20 +6,22 @@ export function Experience() {
     <Section
       id="experience"
       eyebrow="Experience"
-      title="Where the work happens"
+      title="Professional Experience"
     >
       <ol className="timeline">
         {portfolio.experience.map((job) => (
           <li key={`${job.company}-${job.role}`} className="timeline__item">
             <div className="timeline__marker" aria-hidden="true" />
             <article className="glass timeline__card">
-              <div className="timeline__meta">
+              <header className="timeline__header">
+                <div className="timeline__heading">
+                  <h3>{job.role}</h3>
+                  <p className="timeline__company">{job.company}</p>
+                </div>
                 <p className="timeline__period">{job.period}</p>
-                {job.location ? <p>{job.location}</p> : null}
-              </div>
-              <h3>{job.role}</h3>
-              <p className="timeline__company">{job.company}</p>
+              </header>
               <p className="timeline__summary">{job.summary}</p>
+              <p className="timeline__label">Key responsibilities</p>
               <ul>
                 {job.highlights.map((item) => (
                   <li key={item}>{item}</li>

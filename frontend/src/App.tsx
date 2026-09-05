@@ -9,17 +9,20 @@ import { Projects } from './components/Projects'
 import { Research } from './components/Research'
 import { ScrollProgress } from './components/ScrollProgress'
 import { Skills } from './components/Skills'
-import { TopBar } from './components/TopBar'
+import { onSectionLinkClick, sectionPath } from './utils/sectionRoutes'
 import './App.css'
 
 function App() {
   return (
     <div className="app">
-      <a className="skip-link" href="#home">
+      <a
+        className="skip-link"
+        href={sectionPath('home')}
+        onClick={(event) => onSectionLinkClick(event, 'home')}
+      >
         Skip to content
       </a>
       <div className="site-chrome">
-        <TopBar />
         <Navbar />
         <ScrollProgress />
       </div>

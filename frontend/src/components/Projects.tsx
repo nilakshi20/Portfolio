@@ -24,7 +24,13 @@ export function Projects() {
               </div>
             </div>
             <h3>{project.title}</h3>
-            <p>{project.description}</p>
+            <p className="project-card__description">{project.description}</p>
+            {project.architecture ? (
+              <p className="project-card__architecture">
+                <span>Architecture</span>
+                {project.architecture}
+              </p>
+            ) : null}
             <div className="tag-row">
               {project.tags.map((tag) => (
                 <Tag key={tag}>{tag}</Tag>

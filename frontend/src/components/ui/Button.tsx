@@ -1,4 +1,8 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type {
+  ButtonHTMLAttributes,
+  MouseEventHandler,
+  ReactNode,
+} from 'react'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
 
@@ -18,7 +22,7 @@ type ButtonAsLink = CommonProps & {
   href: string
   download?: boolean | string
   type?: never
-  onClick?: () => void
+  onClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
 type ButtonProps = ButtonAsButton | ButtonAsLink
@@ -32,14 +36,19 @@ export function Button(props: ButtonProps) {
   const classes = classNames(variant, className)
 
   if ('href' in props && props.href) {
-    const isHash = props.href.startsWith('#')
+    const isInAppNav =
+      props.href.startsWith('#') ||
+      (props.href.startsWith('/') &&
+        !props.href.startsWith('//') &&
+        !props.href.includes('.'))
+
     return (
       <a
         className={classes}
         href={props.href}
         onClick={props.onClick}
         download={props.download}
-        {...(isHash || props.download
+        {...(isInAppNav || props.download
           ? {}
           : { target: '_blank', rel: 'noreferrer noopener' })}
       >

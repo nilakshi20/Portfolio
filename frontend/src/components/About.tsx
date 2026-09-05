@@ -9,10 +9,21 @@ export function About() {
       title={portfolio.about.title}
     >
       <div className="about">
-        <div className="about__copy">
-          {portfolio.about.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+        <div className="about__intro">
+          <figure className="about__photo">
+            <img
+              src={portfolio.profileImage}
+              alt={`${portfolio.name}, ${portfolio.title}`}
+              width={320}
+              height={400}
+              loading="lazy"
+            />
+          </figure>
+          <div className="about__copy">
+            {portfolio.about.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </div>
         <ul className="about__focus">
           {portfolio.about.focus.map((item) => (

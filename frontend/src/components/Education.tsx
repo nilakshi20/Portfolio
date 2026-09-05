@@ -9,7 +9,20 @@ export function Education() {
           <article key={item.school} className="glass education-card">
             <p className="education-card__period">{item.period}</p>
             <h3>{item.degree}</h3>
-            <p>{item.school}</p>
+            <p className="education-card__school">{item.school}</p>
+            {item.performance ? (
+              <p className="education-card__performance">
+                <span>Academic Performance</span>
+                {item.performance}
+              </p>
+            ) : null}
+            {item.details?.length ? (
+              <ul className="education-card__details">
+                {item.details.map((detail) => (
+                  <li key={detail}>{detail}</li>
+                ))}
+              </ul>
+            ) : null}
           </article>
         ))}
       </div>

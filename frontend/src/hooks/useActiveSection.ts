@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
+import { sectionIdFromPath } from '../utils/sectionRoutes'
+import { syncPathToSection } from './useSectionRouting'
 
 export function useActiveSection(ids: string[]) {
-  const [activeId, setActiveId] = useState(ids[0] ?? '')
+  const [activeId, setActiveId] = useState(
+    () => sectionIdFromPath(window.location.pathname, ids) ?? ids[0] ?? '',
+  )
 
   useEffect(() => {
     const sections = ids
@@ -10,14 +14,23 @@ export function useActiveSection(ids: string[]) {
 
     if (sections.length === 0) return
 
+    let primed = false
+    const primeTimer = window.setTimeout(() => {
+      primed = true
+    }, 120)
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
 
-        if (visible[0]?.target.id) {
-          setActiveId(visible[0].target.id)
+        const nextId = visible[0]?.target.id
+        if (!nextId) return
+
+        setActiveId(nextId)
+        if (primed) {
+          syncPathToSection(nextId)
         }
       },
       {
@@ -27,7 +40,10 @@ export function useActiveSection(ids: string[]) {
     )
 
     sections.forEach((section) => observer.observe(section))
-    return () => observer.disconnect()
+    return () => {
+      window.clearTimeout(primeTimer)
+      observer.disconnect()
+    }
   }, [ids])
 
   return activeId

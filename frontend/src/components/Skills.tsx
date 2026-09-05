@@ -1,77 +1,110 @@
-import { useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { portfolio } from '../data/portfolioData.js'
-import { Section } from './ui/Section'
-import { Tag } from './ui/Tag'
+import { useReveal } from '../hooks/useReveal'
+import { SkillIcon } from './ui/SkillIcon'
 
-const ALL = 'All'
+const SKILL_ICON_IDS: Record<string, string> = {
+  LLM: 'llm',
+  RAG: 'rag',
+  LangChain: 'langchain',
+  LangGraph: 'langgraph',
+  'AI Agents': 'agents',
+  'Tool Calling': 'tools',
+  MCP: 'mcp',
+  'Prompt Engineering': 'prompt',
+  Python: 'python',
+  FastAPI: 'fastapi',
+  'REST APIs': 'rest',
+  Postman: 'postman',
+  'React.js': 'react',
+  JavaScript: 'javascript',
+  HTML: 'html',
+  CSS: 'css',
+  PostgreSQL: 'postgres',
+  MongoDB: 'mongodb',
+  MySQL: 'mysql',
+  Redis: 'redis',
+  MinIO: 'minio',
+  FAISS: 'faiss',
+  Pinecone: 'pinecone',
+  OpenSearch: 'opensearch',
+  AWS: 'aws',
+  EC2: 'ec2',
+  ECS: 'ecs',
+  VPC: 'vpc',
+  ALB: 'alb',
+  Docker: 'docker',
+  NumPy: 'numpy',
+  Pandas: 'pandas',
+  Matplotlib: 'matplotlib',
+  'Scikit-learn': 'sklearn',
+  Git: 'git',
+  GitHub: 'github',
+  Bitbucket: 'bitbucket',
+  'VS Code': 'vscode',
+  Jupyter: 'jupyter',
+}
+
+function skillIconId(label: string) {
+  return SKILL_ICON_IDS[label] ?? 'default'
+}
 
 export function Skills() {
-  const [active, setActive] = useState(ALL)
-
-  const filters = useMemo(
-    () => [ALL, ...portfolio.skills.map((group) => group.category)],
-    [],
-  )
-
-  const totalSkills = useMemo(
-    () => portfolio.skills.reduce((sum, group) => sum + group.items.length, 0),
-    [],
-  )
-
-  const groups =
-    active === ALL
-      ? portfolio.skills
-      : portfolio.skills.filter((group) => group.category === active)
+  const { ref, visible } = useReveal<HTMLElement>()
 
   return (
-    <Section id="skills" eyebrow="Skills" title="The stack I reach for">
-      <div className="skills">
-        <div className="skills__bar">
-          <div className="skills__filters" role="tablist" aria-label="Skill categories">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                role="tab"
-                aria-selected={active === filter}
-                className={`skills__filter${active === filter ? ' is-active' : ''}`}
-                onClick={() => setActive(filter)}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-          <p className="skills__count">
-            {totalSkills} tools · {portfolio.skills.length} areas
-          </p>
-        </div>
+    <section
+      id="skills"
+      ref={ref}
+      className={`section skills-section${visible ? ' is-visible' : ''}`}
+    >
+      <div className="container skills-showcase">
+        <header className="skills-showcase__header">
+          <h2 className="skills-showcase__title">{portfolio.skillsTitle}</h2>
+          <p className="skills-showcase__subtitle">{portfolio.skillsSubtitle}</p>
+        </header>
 
-        <div
-          className={`skill-grid${groups.length === 1 ? ' skill-grid--single' : ''}`}
-        >
-          {groups.map((group) => (
-            <article
+        <div className="skills-groups">
+          {portfolio.skills.map((group, groupIndex) => (
+            <section
               key={group.category}
-              className={`glass skill-card${group.featured ? ' skill-card--featured' : ''}`}
+              className={`skills-group${group.featured ? ' skills-group--featured' : ''}`}
+              style={
+                {
+                  animationDelay: `${groupIndex * 90}ms`,
+                  ['--group-delay' as string]: `${groupIndex * 90}ms`,
+                } as CSSProperties
+              }
             >
-              <header className="skill-card__head">
-                <div>
-                  <h3>{group.category}</h3>
-                  <p className="skill-card__note">{group.note}</p>
-                </div>
-                <span className="skill-card__badge">{group.items.length}</span>
-              </header>
-              <div className="tag-row">
-                {group.items.map((item, index) => (
-                  <Tag key={item} style={{ animationDelay: `${index * 40}ms` }}>
-                    {item}
-                  </Tag>
-                ))}
-              </div>
-            </article>
+              <h3 className="skills-group__title">{group.category}</h3>
+              <ul className="skills-showcase__row skills-showcase__row--group">
+                {group.items.map((item, index) => {
+                  const delayMs = groupIndex * 90 + index * 45
+                  return (
+                    <li
+                      key={`${group.category}-${item}`}
+                      className={`skills-showcase__item${
+                        item === 'Postman' ? ' skills-showcase__item--accent' : ''
+                      }`}
+                      style={
+                        {
+                          animationDelay: `${delayMs}ms`,
+                          ['--skill-delay' as string]: `${delayMs}ms`,
+                        } as CSSProperties
+                      }
+                    >
+                      <span className="skills-showcase__icon">
+                        <SkillIcon id={skillIconId(item)} />
+                      </span>
+                      <span className="skills-showcase__label">{item}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
           ))}
         </div>
       </div>
-    </Section>
+    </section>
   )
 }

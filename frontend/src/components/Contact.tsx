@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { portfolio } from '../data/portfolioData.js'
+import { submitContact } from '../services/contactApi'
 import { formatPhone, mailtoHref, telHref } from '../utils/links'
 import { OptionalLink } from './ui/OptionalLink'
 import { Button } from './ui/Button'
@@ -11,6 +12,12 @@ type FormState = {
   message: string
 }
 
+type Status =
+  | { kind: 'idle' }
+  | { kind: 'loading' }
+  | { kind: 'success'; message: string }
+  | { kind: 'error'; message: string }
+
 const emptyForm: FormState = {
   name: '',
   email: '',
@@ -19,13 +26,32 @@ const emptyForm: FormState = {
 
 export function Contact() {
   const [form, setForm] = useState<FormState>(emptyForm)
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState<Status>({ kind: 'idle' })
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const isLoading = status.kind === 'loading'
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setStatus(
-      `Thanks, ${form.name.trim() || 'there'}. The form is ready — email delivery will be connected next. Meanwhile, write to ${portfolio.email}.`,
-    )
+    if (isLoading) return
+
+    setStatus({ kind: 'loading' })
+    try {
+      const result = await submitContact({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        message: form.message.trim(),
+      })
+      setStatus({ kind: 'success', message: result.detail })
+      setForm(emptyForm)
+    } catch (error) {
+      setStatus({
+        kind: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong sending your message.',
+      })
+    }
   }
 
   return (
@@ -37,15 +63,42 @@ export function Contact() {
     >
       <div className="contact">
         <aside className="glass contact__details">
-          <p className="contact__label">Direct</p>
-          <a href={mailtoHref(portfolio.email)}>{portfolio.email}</a>
-          <a href={telHref(portfolio.phone)}>{formatPhone(portfolio.phone)}</a>
-          <div className="contact__socials">
-            <OptionalLink href={portfolio.socials.github}>GitHub</OptionalLink>
-            <OptionalLink href={portfolio.socials.linkedin}>
-              LinkedIn
-            </OptionalLink>
+          <div className="contact__visual">
+            <span className="contact__orbit" aria-hidden="true" />
+            <span className="contact__orbit contact__orbit--delayed" aria-hidden="true" />
+            <img
+              className="contact__avatar"
+              src={portfolio.profileImage}
+              alt={portfolio.name}
+              width={128}
+              height={128}
+            />
           </div>
+
+          <div className="contact__availability">
+            <span className="contact__dot" aria-hidden="true" />
+            <span>{portfolio.contact.availability}</span>
+          </div>
+
+          <div>
+            <p className="contact__label">Direct</p>
+            <div className="contact__item">
+              <span className="contact__item-label">Email</span>
+              <a href={mailtoHref(portfolio.email)}>{portfolio.email}</a>
+            </div>
+            <div className="contact__item">
+              <span className="contact__item-label">Phone</span>
+              <a href={telHref(portfolio.phone)}>{formatPhone(portfolio.phone)}</a>
+            </div>
+            <div className="contact__socials">
+              <OptionalLink href={portfolio.socials.github}>GitHub</OptionalLink>
+              <OptionalLink href={portfolio.socials.linkedin}>
+                LinkedIn
+              </OptionalLink>
+            </div>
+          </div>
+
+          <p className="contact__response">{portfolio.contact.responseNote}</p>
         </aside>
 
         <form className="glass contact__form" onSubmit={onSubmit}>
@@ -60,6 +113,9 @@ export function Contact() {
               onChange={(event) =>
                 setForm((current) => ({ ...current, name: event.target.value }))
               }
+              minLength={2}
+              maxLength={80}
+              disabled={isLoading}
               required
             />
           </label>
@@ -77,6 +133,7 @@ export function Contact() {
                   email: event.target.value,
                 }))
               }
+              disabled={isLoading}
               required
             />
           </label>
@@ -93,11 +150,31 @@ export function Contact() {
                   message: event.target.value,
                 }))
               }
+              minLength={10}
+              maxLength={2000}
+              disabled={isLoading}
               required
             />
           </label>
-          <Button type="submit">Send Message</Button>
-          {status ? <p className="contact__status">{status}</p> : null}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <span className="btn__spinner" aria-hidden="true" />
+                Sending…
+              </>
+            ) : (
+              'Send Message'
+            )}
+          </Button>
+          <p
+            className={`contact__status contact__status--${status.kind}`}
+            role="status"
+            aria-live="polite"
+          >
+            {status.kind === 'success' || status.kind === 'error'
+              ? status.message
+              : ''}
+          </p>
         </form>
       </div>
     </Section>

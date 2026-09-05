@@ -1,8 +1,27 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { portfolio } from '../data/portfolioData.js'
 import { useActiveSection } from '../hooks/useActiveSection'
+import { useSectionRouting } from '../hooks/useSectionRouting'
+import { downloadResume } from '../utils/downloadResume'
 import { isConfiguredUrl } from '../utils/links'
+import {
+  onSectionLinkClick,
+  sectionPath,
+} from '../utils/sectionRoutes'
 import { Button } from './ui/Button'
+
+function resumeHref() {
+  return `${portfolio.resumeUrl}?v=${portfolio.resumeVersion}`
+}
+
+async function onResumeClick(event: MouseEvent<HTMLAnchorElement>) {
+  event.preventDefault()
+  try {
+    await downloadResume(resumeHref(), portfolio.resumeFileName)
+  } catch {
+    window.location.assign(resumeHref())
+  }
+}
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
@@ -11,6 +30,7 @@ export function Navbar() {
     () => ['home', ...portfolio.nav.map((item) => item.id)],
     [],
   )
+  useSectionRouting(sectionIds)
   const activeId = useActiveSection(sectionIds)
 
   useEffect(() => {
@@ -29,10 +49,15 @@ export function Navbar() {
 
   const close = () => setOpen(false)
 
+  const goTo = (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    onSectionLinkClick(event, id)
+    close()
+  }
+
   return (
     <header className={`nav ${scrolled ? 'nav--scrolled' : ''}`}>
       <div className="container nav__bar">
-        <a className="nav__brand" href="#home" onClick={close}>
+        <a className="nav__brand" href={sectionPath('home')} onClick={goTo('home')}>
           <span className="nav__mark">{portfolio.shortName}</span>
           <span className="nav__name">{portfolio.name}</span>
         </a>
@@ -41,8 +66,9 @@ export function Navbar() {
           {portfolio.nav.map((item) => (
             <a
               key={item.id}
-              href={`#${item.id}`}
+              href={sectionPath(item.id)}
               className={activeId === item.id ? 'is-active' : ''}
+              onClick={goTo(item.id)}
             >
               {item.label}
             </a>
@@ -52,15 +78,20 @@ export function Navbar() {
         <div className="nav__actions">
           {isConfiguredUrl(portfolio.resumeUrl) ? (
             <Button
-              href={portfolio.resumeUrl}
+              href={resumeHref()}
               variant="ghost"
               className="nav__resume"
               download={portfolio.resumeFileName}
+              onClick={onResumeClick}
             >
               Resume
             </Button>
           ) : null}
-          <Button href="#contact" className="nav__talk" onClick={close}>
+          <Button
+            href={sectionPath('contact')}
+            className="nav__talk"
+            onClick={goTo('contact')}
+          >
             Let's Talk
             <span aria-hidden="true"> →</span>
           </Button>
@@ -87,14 +118,14 @@ export function Navbar() {
           {portfolio.nav.map((item) => (
             <a
               key={item.id}
-              href={`#${item.id}`}
+              href={sectionPath(item.id)}
               className={activeId === item.id ? 'is-active' : ''}
-              onClick={close}
+              onClick={goTo(item.id)}
             >
               {item.label}
             </a>
           ))}
-          <Button href="#contact" onClick={close}>
+          <Button href={sectionPath('contact')} onClick={goTo('contact')}>
             Let's Talk
             <span aria-hidden="true"> →</span>
           </Button>

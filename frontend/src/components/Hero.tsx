@@ -1,49 +1,59 @@
+import type { MouseEvent } from 'react'
 import { portfolio } from '../data/portfolioData.js'
-import { useTypedText } from '../hooks/useTypedText'
+import { downloadResume } from '../utils/downloadResume'
 import { isConfiguredUrl } from '../utils/links'
+import { onSectionLinkClick, sectionPath } from '../utils/sectionRoutes'
 import { Button } from './ui/Button'
 
-export function Hero() {
-  const typedRole = useTypedText(portfolio.hero.rotatingTitles)
+function resumeHref() {
+  return `${portfolio.resumeUrl}?v=${portfolio.resumeVersion}`
+}
 
+async function onResumeClick(event: MouseEvent<HTMLAnchorElement>) {
+  event.preventDefault()
+  try {
+    await downloadResume(resumeHref(), portfolio.resumeFileName)
+  } catch {
+    window.location.assign(resumeHref())
+  }
+}
+
+export function Hero() {
   return (
     <section id="home" className="hero">
       <div className="hero__aurora" aria-hidden="true" />
       <div className="hero__glow" aria-hidden="true" />
       <div className="hero__stars" aria-hidden="true" />
-      <div className="hero__orbits" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
       <div className="container hero__grid">
         <div className="hero__copy">
           <p className="eyebrow hero__kicker">
             <span className="hero__kicker-dot" />
-            Applied AI · Production systems
+            {portfolio.hero.eyebrow}
           </p>
-          <h1>
-            <span className="hero__lead">{portfolio.hero.greetingLead}</span>
-            <span className="hero__name">{portfolio.hero.greetingName}</span>
-          </h1>
-          <p className="hero__role">
-            <span>{typedRole}</span>
-            <span className="hero__caret" aria-hidden="true" />
-          </p>
-          <p className="hero__subtitle">{portfolio.hero.subtitle}</p>
+          <h1 className="hero__heading">{portfolio.hero.heading}</h1>
+          <p className="hero__subtitle">{portfolio.hero.description}</p>
+          <p className="hero__support">{portfolio.hero.supporting}</p>
           <div className="hero__actions">
-            <Button href="#projects">
+            <Button
+              href={sectionPath('projects')}
+              onClick={(event) => onSectionLinkClick(event, 'projects')}
+            >
               View Projects
               <span aria-hidden="true"> →</span>
             </Button>
-            <Button href="#contact" variant="secondary">
+            <Button
+              href={sectionPath('contact')}
+              variant="secondary"
+              onClick={(event) => onSectionLinkClick(event, 'contact')}
+            >
               Let's Connect
             </Button>
             {isConfiguredUrl(portfolio.resumeUrl) ? (
               <Button
-                href={portfolio.resumeUrl}
+                href={resumeHref()}
                 variant="ghost"
                 download={portfolio.resumeFileName}
+                onClick={onResumeClick}
               >
                 Download Resume
               </Button>

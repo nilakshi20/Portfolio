@@ -25,9 +25,15 @@ export type ExperienceItem = {
 export type ProjectItem = {
   title: string
   description: string
+  architecture: string
   tags: string[]
   github: string
   demo: string
+}
+
+export type SkillShowcaseItem = {
+  id: string
+  label: string
 }
 
 export type SkillGroup = {
@@ -50,6 +56,8 @@ export type EducationItem = {
   degree: string
   school: string
   period: string
+  performance: string
+  details: string[]
 }
 
 export type Portfolio = {
@@ -58,15 +66,17 @@ export type Portfolio = {
   title: string
   email: string
   phone: string
+  resumeVersion: string
   resumeUrl: string
   resumeFileName: string
+  profileImage: string
   socials: SocialLinks
   nav: NavItem[]
-  topbar: {
-    status: string
-    note: string
-  }
   hero: {
+    eyebrow: string
+    heading: string
+    description: string
+    supporting: string
     greetingLead: string
     greetingName: string
     greeting: string
@@ -82,6 +92,9 @@ export type Portfolio = {
   }
   experience: ExperienceItem[]
   projects: ProjectItem[]
+  skillsTitle: string
+  skillsSubtitle: string
+  skillShowcase: SkillShowcaseItem[]
   skills: SkillGroup[]
   research: ResearchItem[]
   education: EducationItem[]
@@ -89,6 +102,8 @@ export type Portfolio = {
     eyebrow: string
     title: string
     note: string
+    availability: string
+    responseNote: string
   }
 }
 
