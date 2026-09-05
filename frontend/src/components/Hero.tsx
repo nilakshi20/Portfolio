@@ -40,7 +40,11 @@ export function Hero() {
               Let's Connect
             </Button>
             {isConfiguredUrl(portfolio.resumeUrl) ? (
-              <Button href={portfolio.resumeUrl} variant="ghost" download>
+              <Button
+                href={portfolio.resumeUrl}
+                variant="ghost"
+                download={portfolio.resumeFileName}
+              >
                 Download Resume
               </Button>
             ) : null}

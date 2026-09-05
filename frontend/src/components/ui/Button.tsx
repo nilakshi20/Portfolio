@@ -16,7 +16,7 @@ type ButtonAsButton = CommonProps &
 
 type ButtonAsLink = CommonProps & {
   href: string
-  download?: boolean
+  download?: boolean | string
   type?: never
   onClick?: () => void
 }

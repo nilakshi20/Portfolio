@@ -55,7 +55,7 @@ export function Navbar() {
               href={portfolio.resumeUrl}
               variant="ghost"
               className="nav__resume"
-              download
+              download={portfolio.resumeFileName}
             >
               Resume
             </Button>

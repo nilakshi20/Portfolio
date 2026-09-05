@@ -32,6 +32,8 @@ export type ProjectItem = {
 
 export type SkillGroup = {
   category: string
+  note: string
+  featured: boolean
   items: string[]
 }
 
@@ -57,6 +59,7 @@ export type Portfolio = {
   email: string
   phone: string
   resumeUrl: string
+  resumeFileName: string
   socials: SocialLinks
   nav: NavItem[]
   topbar: {

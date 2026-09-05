@@ -5,6 +5,7 @@ export const portfolio = {
   email: 'nilakshimishra7@gmail.com',
   phone: '9569233645',
   resumeUrl: '/resume.pdf',
+  resumeFileName: 'Nilakshi-Mishra-AI-ML-Engineer-Resume.pdf',
   socials: {
     github: '',
     linkedin: '',
@@ -112,15 +113,9 @@ export const portfolio = {
   ],
   skills: [
     {
-      category: 'Languages',
-      items: ['Python', 'JavaScript', 'C'],
-    },
-    {
-      category: 'Frontend',
-      items: ['React.js'],
-    },
-    {
       category: 'AI & Systems',
+      note: 'The core of my day-to-day work',
+      featured: true,
       items: [
         'FastAPI',
         'LLM',
@@ -134,11 +129,27 @@ export const portfolio = {
     },
     {
       category: 'Data & Retrieval',
+      note: 'Storage and vector search',
+      featured: false,
       items: ['PostgreSQL', 'MongoDB', 'Redis', 'MySQL', 'Pinecone', 'FAISS'],
     },
     {
+      category: 'Languages',
+      note: 'Primary programming languages',
+      featured: false,
+      items: ['Python', 'JavaScript', 'C'],
+    },
+    {
       category: 'Cloud & Tools',
+      note: 'Shipping and running services',
+      featured: false,
       items: ['AWS', 'Docker', 'Git'],
+    },
+    {
+      category: 'Frontend',
+      note: 'Interfaces for AI products',
+      featured: false,
+      items: ['React.js'],
     },
   ],
   research: [
