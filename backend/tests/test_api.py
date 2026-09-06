@@ -31,6 +31,12 @@ def test_contact_returns_503_when_delivery_unconfigured(client):
     assert "not configured" in response.json()["detail"]
 
 
+def test_contact_also_available_under_api_prefix(client):
+    response = client.post("/api/contact", json=VALID_PAYLOAD)
+    assert response.status_code == 503
+    assert "not configured" in response.json()["detail"]
+
+
 def test_contact_reports_delivery_only_after_sending(sending_client):
     test_client, stub = sending_client
     response = test_client.post("/contact", json=VALID_PAYLOAD)
