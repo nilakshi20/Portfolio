@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react'
 import { About } from './components/About'
 import { Contact } from './components/Contact'
 import { Education } from './components/Education'
@@ -18,7 +19,9 @@ function App() {
       <a
         className="skip-link"
         href={sectionPath('home')}
-        onClick={(event) => onSectionLinkClick(event, 'home')}
+        onClick={(event: MouseEvent<HTMLAnchorElement>) =>
+          onSectionLinkClick(event, 'home')
+        }
       >
         Skip to content
       </a>

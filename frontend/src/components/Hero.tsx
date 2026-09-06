@@ -36,7 +36,9 @@ export function Hero() {
           <div className="hero__actions">
             <Button
               href={sectionPath('projects')}
-              onClick={(event) => onSectionLinkClick(event, 'projects')}
+              onClick={(event: MouseEvent<HTMLAnchorElement>) =>
+                onSectionLinkClick(event, 'projects')
+              }
             >
               View Projects
               <span aria-hidden="true"> →</span>
@@ -44,7 +46,9 @@ export function Hero() {
             <Button
               href={sectionPath('contact')}
               variant="secondary"
-              onClick={(event) => onSectionLinkClick(event, 'contact')}
+              onClick={(event: MouseEvent<HTMLAnchorElement>) =>
+                onSectionLinkClick(event, 'contact')
+              }
             >
               Let's Connect
             </Button>
