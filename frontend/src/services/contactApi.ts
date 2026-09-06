@@ -1,6 +1,10 @@
 import { portfolio } from '../data/portfolioData.js'
 
-const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
+// Prefer VITE_API_URL. In production on Vercel, default to same-origin /api.
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? '/api' : '')
+).replace(/\/+$/, '')
 
 export type ContactPayload = {
   name: string

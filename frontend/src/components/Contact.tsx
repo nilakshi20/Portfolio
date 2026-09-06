@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { portfolio } from '../data/portfolioData.js'
 import { submitContact } from '../services/contactApi'
-import { formatPhone, mailtoHref, telHref } from '../utils/links'
+import { mailtoHref } from '../utils/links'
 import { OptionalLink } from './ui/OptionalLink'
 import { Button } from './ui/Button'
 import { Section } from './ui/Section'
@@ -85,10 +85,6 @@ export function Contact() {
             <div className="contact__item">
               <span className="contact__item-label">Email</span>
               <a href={mailtoHref(portfolio.email)}>{portfolio.email}</a>
-            </div>
-            <div className="contact__item">
-              <span className="contact__item-label">Phone</span>
-              <a href={telHref(portfolio.phone)}>{formatPhone(portfolio.phone)}</a>
             </div>
             <div className="contact__socials">
               <OptionalLink href={portfolio.socials.github}>GitHub</OptionalLink>
