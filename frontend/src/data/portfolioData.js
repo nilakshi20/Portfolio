@@ -11,8 +11,8 @@ export const portfolio = {
   resumeFileName: 'Nilakshi-Mishra-AI-ML-Engineer-Resume.pdf',
   profileImage: '/profile.png',
   socials: {
-    github: '',
-    linkedin: '',
+    github: 'https://github.com/nilakshi20',
+    linkedin: 'https://www.linkedin.com/in/nilakshi-mishra20/',
   },
   nav: [
     { id: 'about', label: 'About' },
